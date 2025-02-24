@@ -1,0 +1,4 @@
+docker-config/
+.DS_Store
+.env
+docker-compose.yml
