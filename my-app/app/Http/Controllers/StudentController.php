@@ -12,4 +12,10 @@ class StudentController extends Controller
         $students = Student::all();
         return response()->json($students, 200);
     }
+
+    public function destroy(Request $request, Student $student)
+    {
+        $student->delete();
+        return response()->json(['message' => 'Student deleted successfully'], 200);
+    }
 }

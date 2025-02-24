@@ -15,3 +15,4 @@ Route::get('/users', function () {
 });
 
 Route::get('/students', [StudentController::class, 'index']);
+Route::delete('/students/{student}', [StudentController::class, 'destroy']);
