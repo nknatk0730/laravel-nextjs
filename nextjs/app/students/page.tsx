@@ -1,4 +1,4 @@
-import { deleteStudent, getStudents } from "@/server/students";
+import { deleteStudent, getStudents } from "@/server/user";
 
 export default async function page() {
   const students = await getStudents();

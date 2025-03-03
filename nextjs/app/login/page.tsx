@@ -1,16 +1,11 @@
-import { createUser } from "@/server/user";
+import { login } from "@/auth/auth";
 
 export default async function page() {
 
 
   return (
     <div className="p-4">
-      {/* student register */}
-      <form action={createUser} className="space-y-4">
-        <div>
-          <label htmlFor="name">Name</label>
-          <input className="border rounded p-1" type="text" name="name" id="name" />
-        </div>
+      <form action={login} className="space-y-4">
         <div>
           <label htmlFor="email">Email</label>
           <input type="email" name="email" id="email" className="p-1 border rounded" />
@@ -19,7 +14,7 @@ export default async function page() {
           <label htmlFor="password">Password</label>
           <input type="password" name="password" id="password" className="p-1 border rounded" />
         </div>
-        <button className="border rounded p-1 bg-blue-500 hover:bg-blue-700" type="submit">Register</button>
+        <button className="border rounded p-1 bg-blue-500 hover:bg-blue-700" type="submit">Login</button>
       </form>
     </div>
   )

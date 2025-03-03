@@ -14,4 +14,9 @@ class UserController extends Controller
 
         return view('user', ['user' => $user]);
     }
+
+    public function dashboard(User $user)
+    {
+        return response()->json($user);
+    }
 }
