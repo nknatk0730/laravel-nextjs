@@ -2,6 +2,7 @@
 
 import { Student } from "@/types/students";
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export const getStudents = async (): Promise<Student[]> => {
@@ -34,7 +35,7 @@ export const createUser = async (formData: FormData): Promise<void> => {
       throw new Error("NEXT_PUBLIC_BACKEND_URL が設定されていません");
     }
 
-    const studentData = {
+    const userData = {
       name: formData.get("name")?.toString() || "",
       email: formData.get("email")?.toString() || "",
       password: formData.get("password")?.toString() || "",
@@ -42,10 +43,17 @@ export const createUser = async (formData: FormData): Promise<void> => {
     };
 
     // CSRFトークンとセッションを取得
-    const { xsrfToken, laravelSession } = await getCsrfTokenAndSession(backendUrl);
+    const { xsrfToken, laravelSession } = await getCsrfTokenAndSession(
+      backendUrl
+    );
     if (!xsrfToken || !laravelSession) {
-      throw new Error("CSRFトークンまたは Laravel セッションの取得に失敗しました");
+      throw new Error(
+        "CSRFトークンまたは Laravel セッションの取得に失敗しました"
+      );
     }
+
+    // console.log("送信するXSRF-TOKEN:", xsrfToken);
+    // console.log("送信するCookie:", laravelSession);
 
     // ユーザー登録リクエスト
     const res = await fetch(`${backendUrl}/register`, {
@@ -56,25 +64,27 @@ export const createUser = async (formData: FormData): Promise<void> => {
         Cookie: `laravel_session=${laravelSession}`,
         Accept: "application/json",
       },
-      body: JSON.stringify(studentData),
+      body: JSON.stringify(userData),
     });
 
     console.log("登録リクエスト結果:", res.status, res.statusText);
-    // JSONレスポンスがあるかを確認
-    const contentType = res.headers.get("Content-Type");
-    if (contentType?.includes("application/json")) {
-      const responseJson = await res.json();
-      console.log("レスポンス:", responseJson);
-    } else if (res.status !== 204) {
-      console.warn("予期しないレスポンス:", await res.text());
+    // set-cookieがあるかを確認
+    const setCookie = res.headers.get("set-cookie");
+    // console.log(setCookie);
+    if (setCookie) {
+      const cookieStore = await cookies();
+      const sessionMatch = setCookie.match(/laravel_session=([^;]+)/);
+      const xsrfTokenMatch = setCookie.match(/XSRF-TOKEN=([^;]+)/);
+      if (sessionMatch && xsrfTokenMatch) {
+        cookieStore.set("XSRF-TOKEN", xsrfTokenMatch[1], { httpOnly: true });
+        cookieStore.set("laravel_session", sessionMatch[1], { httpOnly: true });
+      }
     }
-    res.headers.get("set-cookie");
-    console.log("setCookie:", res.headers.get("set-cookie"));
   } catch (error) {
     console.error("ユーザー登録処理中にエラーが発生:", error);
   }
 
-  redirect('/login');
+  redirect("/dashboard");
 };
 
 export const getCsrfTokenAndSession = async (backendUrl: string) => {

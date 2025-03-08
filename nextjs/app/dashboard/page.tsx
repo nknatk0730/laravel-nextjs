@@ -1,32 +1,33 @@
-import { checkAuthStatus, getCsrf, logout } from "@/auth/auth";
-import { cookies } from "next/headers"
-import { redirect } from "next/navigation";
-
+import { fetchTodos } from "@/actions/todo";
+import { checkAuth, logout } from "@/auth/auth";
+import { buttonVariants } from "@/components/ui/button";
+import Link from "next/link";
 export default async function page() {
-  const cookieStore = await cookies();
-  const session = cookieStore.get("laravel_session");
-
-  if (!session) {
-    redirect("/login");
-  }
-
-
+  const user = await checkAuth();
+  const todos = await fetchTodos();
 
   return (
     <div className="p-4 space-y-4">
-      <h1>dashboard</h1>
-      <form action={logout}>
-        <button className="p-1 rounded border" type="submit">Logout</button>
-      </form>
-
-      <form action={checkAuthStatus}>
-        <button className="p-1 rounded border" type="submit">Check Auth Status</button>
-      </form>
+      <h1 className="text-2xl font-semibold">Dashboard</h1>
+      <p>Welcome, {user.name}</p>
+      <p>Email: {user.email}</p>
+      <Link href='/create' className={buttonVariants()}>Create Todo</Link>
       
-      <form action={getCsrf}>
-        <button className="p-1 rounded border" type="submit">get Status</button>
+      <h2>Todo List</h2>
+      {/* もしTodoが１つ以上あれば表示 */}
+      {todos.length > 0 && (
+        <div>
+          <ul>
+            {todos.map((todo) => (
+              <li key={todo.id}>{todo.title}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <form action={logout}>
+        <button className="p-1 rounded border" type="submit">Logo</button>
       </form>
     </div>
-
-  )
+  );
 }
