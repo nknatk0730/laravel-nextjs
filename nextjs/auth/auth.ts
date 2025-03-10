@@ -18,7 +18,7 @@ export const checkAuth = cache(async (): Promise<User> => {
   }
 
   // Laravelの認証状態を確認するエンドポイント（例：/api/userなど）で認証状態を確認する
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const backendUrl = process.env.BACKEND_URL;
 
   const res = await fetch(`${backendUrl}/user`, {
     method: "GET",
@@ -40,7 +40,7 @@ export const checkAuth = cache(async (): Promise<User> => {
   return data; // 認証されていればtrue
 });
 
-// const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+// const backendUrl = process.env.BACKEND_URL;
 
 // const getAuthCookies = async () => {
 //   const cookieStore = await cookies();
@@ -85,7 +85,7 @@ export const checkAuth = cache(async (): Promise<User> => {
 
 
 // export const checkAuthStatus = async () => {
-//   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+//   const backendUrl = process.env.BACKEND_URL;
 //   const cookieStore = await cookies();
 //   const xsrfToken = cookieStore.get("XSRF-TOKEN")?.value;
 //   const laravelSession = cookieStore.get("laravel_session")?.value;
@@ -120,9 +120,9 @@ export const checkAuth = cache(async (): Promise<User> => {
 
 export const login = async (formData: FormData): Promise<void> => {
   try {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    const backendUrl = process.env.BACKEND_URL;
     if (!backendUrl) {
-      throw new Error("NEXT_PUBLIC_BACKEND_URL が設定されていません");
+      throw new Error("BACKEND_URL が設定されていません");
     }
 
     const user = {
@@ -179,9 +179,9 @@ export const login = async (formData: FormData): Promise<void> => {
 }
 
 export const getCsrf = async () => {
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const backendUrl = process.env.BACKEND_URL;
   if (!backendUrl) {
-    throw new Error("NEXT_PUBLIC_BACKEND_URL が設定されていません");
+    throw new Error("BACKEND_URL が設定されていません");
   }
   // CSRFトークンとセッションを取得
   const res = await fetch(`${backendUrl}/sanctum/csrf-cookie`, {
@@ -203,9 +203,9 @@ export const getCsrf = async () => {
 
 export const logout = async (): Promise<void> => {
   try {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    const backendUrl = process.env.BACKEND_URL;
     if (!backendUrl) {
-      throw new Error("NEXT_PUBLIC_BACKEND_URL が設定されていません");
+      throw new Error("BACKEND_URL が設定されていません");
     }
 
     const cookieStore = await cookies();

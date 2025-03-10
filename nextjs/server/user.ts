@@ -6,7 +6,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export const getStudents = async (): Promise<Student[]> => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/students`);
+  const res = await fetch(`${process.env.BACKEND_URL}/students`);
   const students = await res.json();
   return students;
 }
@@ -16,7 +16,7 @@ export const deleteStudent = async (formData: FormData): Promise<void> => {
   const id = formData.get("id");
 
   try {
-    await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/students/${id}`, {
+    await fetch(`${process.env.BACKEND_URL}/students/${id}`, {
       method: "DELETE",
     });
     // reload the page
@@ -30,9 +30,9 @@ export const deleteStudent = async (formData: FormData): Promise<void> => {
 
 export const createUser = async (formData: FormData): Promise<void> => {
   try {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
+    const backendUrl = process.env.BACKEND_URL;
     if (!backendUrl) {
-      throw new Error("NEXT_PUBLIC_BACKEND_URL が設定されていません");
+      throw new Error("BACKEND_URL が設定されていません");
     }
 
     const userData = {

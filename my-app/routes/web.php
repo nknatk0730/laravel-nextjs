@@ -21,5 +21,6 @@ Route::get('/students', [StudentController::class, 'index']);
 
 Route::get('/todos', [TodoController::class, 'index'])->middleware('auth');
 Route::post('/create', [TodoController::class, 'store'])->middleware('auth');
+Route::delete('/delete/{todo}', [TodoController::class, 'destroy'])->middleware('auth');
 
 require __DIR__.'/auth.php';

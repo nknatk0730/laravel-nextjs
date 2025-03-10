@@ -1,6 +1,6 @@
-import { fetchTodos } from "@/actions/todo";
+import { deleteTodo, fetchTodos } from "@/actions/todo";
 import { checkAuth, logout } from "@/auth/auth";
-import { buttonVariants } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import Link from "next/link";
 export default async function page() {
   const user = await checkAuth();
@@ -19,14 +19,20 @@ export default async function page() {
         <div>
           <ul>
             {todos.map((todo) => (
-              <li key={todo.id}>{todo.title}</li>
+              <div key={todo.id}>
+                <li>{todo.title}</li>
+                <form action={deleteTodo}>
+                  <input type="hidden" name="id" value={todo.id} />
+                  <Button className="p-1 rounded border" type="submit">Delete</Button>
+                </form>
+              </div>
             ))}
           </ul>
         </div>
       )}
 
       <form action={logout}>
-        <button className="p-1 rounded border" type="submit">Logo</button>
+        <Button className="p-1 rounded border" type="submit">Logout</Button>
       </form>
     </div>
   );
